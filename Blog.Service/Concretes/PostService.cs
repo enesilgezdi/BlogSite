@@ -41,6 +41,20 @@ public sealed class PostService : IPostService
 
     }
 
+    public ReturnModel<string> Delete(Guid id)
+    {
+        Post? post = _postRepository.GetById(id);
+        Post deletedPost = _postRepository.Delete(post);
+
+        return new ReturnModel<string>
+        {
+            Data =$"Post Başlığı : {deletedPost.Title}",
+            Message = "Post Silindi",
+            Status = 204,
+            Success = true
+        };
+    }
+
     public ReturnModel<List<PostResponseDto>> GetAll()
     {
         var posts = _postRepository.GetAll();
@@ -57,6 +71,50 @@ public sealed class PostService : IPostService
 
     }
 
+    public ReturnModel<List<PostResponseDto>> GetAllByAuthorId(long authorId)
+    {
+        var posts = _postRepository.GetAllByAuthorId(authorId);
+        var responses = _mapper.Map<List<PostResponseDto>>(posts);
+
+        return new ReturnModel<List<PostResponseDto>>
+        {
+            Data = responses,
+            Message = $"Yazar Id'sine gore Postlar Listelendi : Yazar Id: {authorId}",
+            Status = 200,
+            Success = true
+        };
+
+
+    }
+
+    public ReturnModel<List<PostResponseDto>> GetAllByCategoryId(int id)
+    {
+        var posts = _postRepository.GetAllByCategoryId(id);
+        var responses = _mapper.Map<List<PostResponseDto>>(posts);
+
+        return new ReturnModel<List<PostResponseDto>>
+        {
+            Data = responses,
+            Message = $"Category Id'sine gore Postlar Listelendi : Yazar Id: {id}",
+            Status = 200,
+            Success = true
+        };
+    }
+
+    public ReturnModel<List<PostResponseDto>> GetAllByTitleContains(string text)
+    {
+        var posts = _postRepository.GetAllByTitleContains(text);
+        var responses = _mapper.Map<List<PostResponseDto>>(posts);
+
+        return new ReturnModel<List<PostResponseDto>>
+        {
+            Data = responses,
+            Message = string.Empty,
+            Status = 200,
+            Success = true
+        };
+    }
+
     public ReturnModel<PostResponseDto> GetById(Guid id)
     {
         var post = _postRepository.GetById(id);
@@ -68,5 +126,10 @@ public sealed class PostService : IPostService
             Status = 200,
             Success = true
         };
+    }
+
+    public ReturnModel<PostResponseDto> Update(UpdatePostRequestDto dto)
+    {
+        
     }
 }
