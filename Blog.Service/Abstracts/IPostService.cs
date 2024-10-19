@@ -10,6 +10,6 @@ public interface IPostService
     ReturnModel<PostResponseDto> Add(CreatePostRequestDto dto);
     ReturnModel<List<PostResponseDto>> GetAll();
 
-    ReturnModel<PostResponseDto> Update(Guid id, UpdatePostRequestDto dto);
+    ReturnModel<PostResponseDto> GetById(Guid id);
 
 }

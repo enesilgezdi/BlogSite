@@ -43,7 +43,7 @@ public sealed class PostService : IPostService
 
     public ReturnModel<List<PostResponseDto>> GetAll()
     {
-        List<Post> posts = _postRepository.GetAll();
+        var posts = _postRepository.GetAll();
 
         List<PostResponseDto> response = _mapper.Map<List<PostResponseDto>>(posts);
 
@@ -57,34 +57,16 @@ public sealed class PostService : IPostService
 
     }
 
-    public ReturnModel<PostResponseDto> Update(Guid id , UpdatePostRequestDto dto)
+    public ReturnModel<PostResponseDto> GetById(Guid id)
     {
-        Post existingPost = _postRepository.GetById(id);
-
-        if (existingPost == null)
-        {
-            return new ReturnModel<PostResponseDto>
-            {
-                Data = null,
-                Message = "Post Bulunamdı",
-                Status = 404,
-                Success = false
-            };
-        }
-
-        _mapper.Map(dto, existingPost);
-
-        Post updatedPost = _postRepository.Update(existingPost);
-
-        PostResponseDto response = _mapper.Map<PostResponseDto>(updatedPost);
-
+        var post = _postRepository.GetById(id);
+        var repsonse = _mapper.Map<PostResponseDto>(post);
         return new ReturnModel<PostResponseDto>
         {
-            Data =response ,
-            Message = "Post Basrıyla güncellendi",
+            Data = repsonse,
+            Message = "ilgili post gösterildi",
             Status = 200,
             Success = true
-
         };
     }
 }
