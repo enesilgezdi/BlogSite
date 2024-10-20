@@ -45,6 +45,8 @@ public class CategoriesController(ICategoryService _categoryService) : Controlle
         var result = _categoryService.Delete(id);
         return Ok(result);
     }
+
+    [HttpGet("getallbynamecontains")]
     public IActionResult GetAllByNameContains(string name)
     {
         var result = _categoryService.GetAllByNameContains(name);

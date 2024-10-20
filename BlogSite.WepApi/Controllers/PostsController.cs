@@ -52,18 +52,19 @@ public class PostsController(IPostService _postService) : ControllerBase
         var result = _postService.Delete(id);
         return Ok(result);
     }
-
+    [HttpGet("getallbycategoryid")]   
     public IActionResult GetAllByCategoryId(int id)
     {
         var result = _postService.GetAllByCategoryId(id);
         return Ok(result);
     }
+    [HttpGet("getallbyauthorid")]
     public IActionResult GetAllByAuthorId(long authorId)
     {
         var result = _postService.GetAllByAuthorId(authorId);
         return Ok(result);
     }
-
+    [HttpGet("getallbytitlecontains")]
     public IActionResult GetAllByTitleContains(string text)
     {
         var result = _postService.GetAllByTitleContains(text);

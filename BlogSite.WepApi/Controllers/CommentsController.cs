@@ -45,18 +45,19 @@ public class CommentsController(ICommentService _commentService) : ControllerBas
         var result = _commentService.Delete(id);
         return Ok(result);
     }
+    [HttpGet("getallbypostid")]
     public IActionResult GetAllByPostId(Guid postId)
     {
         var result = _commentService.GetAllByPostId(postId);
         return Ok(result);
     }
-
+    [HttpGet("getallbyuserid")]
     public IActionResult GetAllByUserId(long userId)
     {
         var result = _commentService.GetAllByUserId(userId);
         return Ok(result);
     }
-
+    [HttpGet("getallbytextcontains")]
     public IActionResult GetAllByTextContains(string text)
     {
         var result = _commentService.GetAllByTextContains(text);
