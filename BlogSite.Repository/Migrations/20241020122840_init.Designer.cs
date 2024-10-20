@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlogSite.Repository.Migrations
 {
     [DbContext(typeof(BaseDbContext))]
-    [Migration("20241019130454_init")]
+    [Migration("20241020122840_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -190,7 +190,7 @@ namespace BlogSite.Repository.Migrations
                         new
                         {
                             Id = 1L,
-                            CreatedTime = new DateTime(2024, 10, 19, 16, 4, 52, 285, DateTimeKind.Local).AddTicks(1495),
+                            CreatedTime = new DateTime(2024, 10, 20, 15, 28, 37, 875, DateTimeKind.Local).AddTicks(99),
                             Email = "enes@hotma.com",
                             FirstName = "ismail",
                             LastName = "ilgezdi",

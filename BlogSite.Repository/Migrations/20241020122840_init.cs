@@ -110,7 +110,7 @@ namespace BlogSite.Repository.Migrations
             migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "UserId", "CreatedTime", "Email", "FirstName", "LastName", "Password", "UpdatedTime", "UserName" },
-                values: new object[] { 1L, new DateTime(2024, 10, 19, 16, 4, 52, 285, DateTimeKind.Local).AddTicks(1495), "enes@hotma.com", "ismail", "ilgezdi", "qweqwe", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "SLardar" });
+                values: new object[] { 1L, new DateTime(2024, 10, 20, 15, 28, 37, 875, DateTimeKind.Local).AddTicks(99), "enes@hotma.com", "ismail", "ilgezdi", "qweqwe", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "SLardar" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Comments_PostId",

@@ -187,7 +187,7 @@ namespace BlogSite.Repository.Migrations
                         new
                         {
                             Id = 1L,
-                            CreatedTime = new DateTime(2024, 10, 19, 16, 4, 52, 285, DateTimeKind.Local).AddTicks(1495),
+                            CreatedTime = new DateTime(2024, 10, 20, 15, 28, 37, 875, DateTimeKind.Local).AddTicks(99),
                             Email = "enes@hotma.com",
                             FirstName = "ismail",
                             LastName = "ilgezdi",

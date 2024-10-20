@@ -1,4 +1,5 @@
 ﻿using Blog.Service.Abstracts;
+using Blog.Service.Concretes;
 using BlogSite.Models.Posts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -35,6 +36,37 @@ public class PostsController(IPostService _postService) : ControllerBase
     public IActionResult GetById([FromRoute]Guid id)
     {
         var result =_postService.GetById(id);
+        return Ok(result);
+    }
+
+    [HttpPut("update")]
+    public IActionResult Update(UpdatePostRequestDto dto)
+    {
+        var result = _postService.Update(dto);
+        return Ok(result);
+    }
+
+    [HttpDelete("delete")]
+    public IActionResult Delete(Guid id)
+    {
+        var result = _postService.Delete(id);
+        return Ok(result);
+    }
+
+    public IActionResult GetAllByCategoryId(int id)
+    {
+        var result = _postService.GetAllByCategoryId(id);
+        return Ok(result);
+    }
+    public IActionResult GetAllByAuthorId(long authorId)
+    {
+        var result = _postService.GetAllByAuthorId(authorId);
+        return Ok(result);
+    }
+
+    public IActionResult GetAllByTitleContains(string text)
+    {
+        var result = _postService.GetAllByTitleContains(text);
         return Ok(result);
     }
 }

@@ -1,3 +1,3 @@
 ﻿
 namespace BlogSite.Models.Posts;
-public sealed record UpdatePostRequestDto(string Title, string Content);
+public sealed record UpdatePostRequestDto(Guid Id, string Title, string Content);
