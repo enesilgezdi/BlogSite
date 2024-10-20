@@ -1,5 +1,6 @@
 ﻿
 
+using BlogSite.Models.Entities;
 using BlogSite.Repository.Repositories.Abstracts;
 using Core.Exceptions;
 
@@ -16,5 +17,5 @@ public class CategoryBusinessRules(ICategoryRepository _categoryRepository)
         }
     }
 
-  
+
 }

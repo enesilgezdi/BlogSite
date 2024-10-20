@@ -1,5 +1,6 @@
 ﻿
 
+using BlogSite.Models.Entities;
 using BlogSite.Repository.Repositories.Abstracts;
 using Core.Exceptions;
 
@@ -15,6 +16,14 @@ public class PostBusinessRules(IPostRepository _postRepository)
             throw new NotFoundException($"ilgili id ye göre post bulunamadı : {id}");
         }
 
+    }
+    public void CheckIfPostTitleLengthValid(string title)
+    {
+        if (title.Length < 5 || title.Length > 100)
+        {
+            throw new Exception("Başlık uzunluğu 5-100 karakter arasında olmalıdır.");
+        }
+        return;
     }
 
 }

@@ -29,6 +29,10 @@ public class PostsController(IPostService _postService) : ControllerBase
     public IActionResult Add([FromBody]CreatePostRequestDto dto)
     {
         var result = _postService.Add(dto);
+        if(!result.Success)
+        {
+            return BadRequest(result.Message);
+        }
         return Ok(result);
     }
     [HttpGet("getbyid/{id}")]    

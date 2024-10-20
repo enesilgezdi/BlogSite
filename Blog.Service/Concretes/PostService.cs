@@ -24,10 +24,16 @@ public sealed class PostService : IPostService
 
     public ReturnModel<PostResponseDto> Add(CreatePostRequestDto dto)
     {
+        
+
         Post createdPost = _mapper.Map<Post>(dto);
         createdPost.Id = Guid.NewGuid();
 
+
+        _businessRules.CheckIfPostTitleLengthValid(createdPost.Title);
+
         Post post = _postRepository.Add(createdPost);
+       
         PostResponseDto response = _mapper.Map<PostResponseDto>(post);
 
         return new ReturnModel<PostResponseDto>
