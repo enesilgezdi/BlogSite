@@ -44,7 +44,7 @@ public class PostsController(IPostService _postService) : ControllerBase
     }
 
     [HttpPut("update")]
-    public IActionResult Update(UpdatePostRequestDto dto)
+    public IActionResult Update([FromBody]UpdatePostRequestDto dto)
     {
         var result = _postService.Update(dto);
         return Ok(result);

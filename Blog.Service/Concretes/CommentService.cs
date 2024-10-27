@@ -74,8 +74,8 @@ public sealed class CommentService : ICommentService
 
     public ReturnModel<List<CommentResponseDto>> GetAllByPostId(Guid postId)
     {
-        var posts = _commentRepository.GetAllByPostId(postId);
-        var responses = _mapper.Map<List<CommentResponseDto>>(posts);
+        var comments = _commentRepository.GetAll(c => c.PostId == postId);
+        var responses = _mapper.Map<List<CommentResponseDto>>(comments);
 
         return new ReturnModel<List<CommentResponseDto>>
         {
@@ -89,8 +89,8 @@ public sealed class CommentService : ICommentService
 
     public ReturnModel<List<CommentResponseDto>> GetAllByTextContains(string text)
     {
-       var posts = _commentRepository.GetAllByTextContains(text);
-       var responses = _mapper.Map<List<CommentResponseDto>>(posts);
+       var comments = _commentRepository.GetAll(c=> c.Text.Contains(text));
+       var responses = _mapper.Map<List<CommentResponseDto>>(comments);
 
         return new ReturnModel<List<CommentResponseDto>>
         {
@@ -103,8 +103,8 @@ public sealed class CommentService : ICommentService
 
     public ReturnModel<List<CommentResponseDto>> GetAllByUserId(long userId)
     {
-        var posts = _commentRepository.GetAllByUserId(userId);
-        var responses = _mapper.Map<List<CommentResponseDto>>(posts);
+        var comments = _commentRepository.GetAll(c=>c.UserId == userId);
+        var responses = _mapper.Map<List<CommentResponseDto>>(comments);
 
         return new ReturnModel<List<CommentResponseDto>>
         {
@@ -120,8 +120,8 @@ public sealed class CommentService : ICommentService
         try
         {
             _businessRules.CommentIsPresent(id);
-            var post = _commentRepository.GetById(id);
-            var response = _mapper.Map<CommentResponseDto>(post);
+            var comment = _commentRepository.GetById(id);
+            var response = _mapper.Map<CommentResponseDto>(comment);
 
             return new ReturnModel<CommentResponseDto>
             {
@@ -143,8 +143,10 @@ public sealed class CommentService : ICommentService
         try
         {
             _businessRules.CommentIsPresent(dto.id);
-            var post = _mapper.Map<Comment>(dto);
-            var updated =_commentRepository.Update(post);
+            var comment = _commentRepository.GetById(dto.id);
+            comment.Text = dto.Text;
+
+            var updated =_commentRepository.Update(comment);
 
             CommentResponseDto response = _mapper.Map<CommentResponseDto>(updated);
             return new ReturnModel<CommentResponseDto>

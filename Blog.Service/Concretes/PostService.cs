@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Blog.Service.Abstracts;
+using Blog.Service.Constants;
 using Blog.Service.Rules;
 using BlogSite.Models.Entities;
 using BlogSite.Models.Posts;
@@ -57,7 +58,7 @@ public sealed class PostService : IPostService
         return new ReturnModel<string>
         {
             Data =$"Post Başlığı : {deletedPost.Title}",
-            Message = "Post Silindi",
+            Message = Messages.PostDeleteMessage,
             Status = 204,
             Success = true
         };
@@ -81,7 +82,7 @@ public sealed class PostService : IPostService
 
     public ReturnModel<List<PostResponseDto>> GetAllByAuthorId(long authorId)
     {
-        var posts = _postRepository.GetAllByAuthorId(authorId);
+        var posts = _postRepository.GetAll(p => p.AuthorId == authorId);
         var responses = _mapper.Map<List<PostResponseDto>>(posts);
 
         return new ReturnModel<List<PostResponseDto>>
@@ -97,7 +98,7 @@ public sealed class PostService : IPostService
 
     public ReturnModel<List<PostResponseDto>> GetAllByCategoryId(int id)
     {
-        var posts = _postRepository.GetAllByCategoryId(id);
+        var posts = _postRepository.GetAll(p=>p.CategoryId == id);
         var responses = _mapper.Map<List<PostResponseDto>>(posts);
 
         return new ReturnModel<List<PostResponseDto>>
@@ -111,7 +112,7 @@ public sealed class PostService : IPostService
 
     public ReturnModel<List<PostResponseDto>> GetAllByTitleContains(string text)
     {
-        var posts = _postRepository.GetAllByTitleContains(text);
+        var posts = _postRepository.GetAll(p=>p.Title.Contains(text));
         var responses = _mapper.Map<List<PostResponseDto>>(posts);
 
         return new ReturnModel<List<PostResponseDto>>
@@ -152,7 +153,11 @@ public sealed class PostService : IPostService
         try
         {
             _businessRules.PostIsPresent(dto.Id);
-            Post post = _mapper.Map<Post>(dto);
+
+            Post post = _postRepository.GetById(dto.Id);
+            post.Title = dto.Title;
+            post.Content = dto.Content;
+
             Post updated = _postRepository.Update(post);
 
             PostResponseDto response = _mapper.Map<PostResponseDto>(updated);

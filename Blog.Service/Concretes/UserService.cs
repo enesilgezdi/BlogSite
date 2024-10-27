@@ -111,7 +111,11 @@ public sealed class UserService : IUserService
         try
         {
             _businessRules.UserIsPresent(dto.Id);
-            var user = _mapper.Map<User>(dto);
+            var user = _userRepository.GetById(dto.Id);
+            user.FirstName = dto.FirstName;
+            user.LastName = dto.LastName;
+            user.Email = dto.Email;
+
             var updated = _userRepository.Update(user);
 
             UserResponseDto response = _mapper.Map<UserResponseDto>(updated);

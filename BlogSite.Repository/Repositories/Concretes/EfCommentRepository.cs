@@ -12,23 +12,5 @@ public class EfCommentRepository : EfRepositoryBase<BaseDbContext, Comment, Guid
     {
     }
 
-    public List<Comment> GetAllByPostId(Guid postId)
-    {
-        List<Comment> comments = Context.Comments.Where(x=>x.PostId == postId).ToList();
-        return comments;
-    }
-
-    public List<Comment> GetAllByTextContains(string text)
-    {
-        List<Comment> comments = Context.Comments.
-            Where(x=>x.Text.Contains(text, StringComparison.OrdinalIgnoreCase))
-            .ToList();
-        return comments;
-    }
-
-    public List<Comment> GetAllByUserId(long userId)
-    {
-        List<Comment> comments = Context.Comments.Where(x=>x.UserId == userId).ToList();
-        return comments;
-    }
+    
 }

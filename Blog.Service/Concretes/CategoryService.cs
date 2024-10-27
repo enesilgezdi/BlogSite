@@ -72,7 +72,7 @@ public class CategoryService : ICategoryService
 
     public ReturnModel<List<CategoryResponseDto>> GetAllByNameContains(string name)
     {
-        var categories = _categoryRepository.GetAllByNameContains(name);
+        var categories = _categoryRepository.GetAll(c=>c.Name == name);
         var response = _mapper.Map<List<CategoryResponseDto>>(categories);
 
         return new ReturnModel<List<CategoryResponseDto>>
@@ -112,7 +112,9 @@ public class CategoryService : ICategoryService
         try
         {
             _businessRules.CategoryIsPresent(dto.Id);
-            var category = _mapper.Map<Category>(dto);
+            var category = _categoryRepository.GetById(dto.Id);
+            category.Name= dto.Name;
+
             var updatedCategory = _categoryRepository.Update(category);
 
             var response = _mapper.Map<CategoryResponseDto>(updatedCategory);

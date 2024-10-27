@@ -14,12 +14,20 @@ public class MappingProfiles : Profile
     {
         CreateMap<CreatePostRequestDto, Post>();
         CreateMap<Post, PostResponseDto>();
+        CreateMap<UpdatePostRequestDto, Post>();
+
         CreateMap<CreateCategoryRequestDto, Category>();
         CreateMap<Category, CategoryResponseDto>();
+        CreateMap<UpdateCategoryRequestDto, Category>();
+
         CreateMap<CreateUserRequestDto , User>();
         CreateMap<User, UserResponseDto>();
+        CreateMap<UpdateUserRequestDto , User>();
+
+
         CreateMap<CreateCommentRequestDto , Comment>();
         CreateMap<Comment, CommentResponseDto>();
+        CreateMap<UpdateCommentRequestDto , Comment>();
     }
 
 }

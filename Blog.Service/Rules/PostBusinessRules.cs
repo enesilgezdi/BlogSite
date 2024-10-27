@@ -1,5 +1,6 @@
 ﻿
 
+using Blog.Service.Constants;
 using BlogSite.Models.Entities;
 using BlogSite.Repository.Repositories.Abstracts;
 using Core.Exceptions;
@@ -13,7 +14,7 @@ public class PostBusinessRules(IPostRepository _postRepository)
         var post = _postRepository.GetById(id);
         if(post is null)
         {
-            throw new NotFoundException($"ilgili id ye göre post bulunamadı : {id}");
+            throw new NotFoundException(Messages.PostIsNotPresentMessage(id));
         }
 
     }

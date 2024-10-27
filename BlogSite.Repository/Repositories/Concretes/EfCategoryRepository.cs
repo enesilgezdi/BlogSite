@@ -13,13 +13,6 @@ public class EfCategoryRepository : EfRepositoryBase<BaseDbContext, Category, in
     {
     }
 
-    public List<Category> GetAllByNameContains(string name)
-    {
-        List<Category> categories = Context.Categories
-            .Where(x => x.Name.Contains(name, StringComparison.CurrentCultureIgnoreCase))
-            .ToList();
-        return categories;
-    }
 }
 
 
