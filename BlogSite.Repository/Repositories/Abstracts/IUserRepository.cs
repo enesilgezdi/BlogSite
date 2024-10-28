@@ -5,7 +5,7 @@ using Core.Repository;
 
 namespace BlogSite.Repository.Repositories.Abstracts;
 
-public interface IUserRepository :IRepository<User, long>
+public interface IUserRepository :IRepository<User, string>
 {
     
 }

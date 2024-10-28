@@ -24,35 +24,51 @@ public class CategoryService : ICategoryService
 
     public ReturnModel<CategoryResponseDto> Add(CreateCategoryRequestDto dto)
     {
-        var createdCategory = _mapper.Map<Category>(dto);
-
-        var category = _categoryRepository.Add(createdCategory);
-        var response = _mapper.Map<CategoryResponseDto>(category);
-
-        return new ReturnModel<CategoryResponseDto>
+        try
         {
-            Data = response,
-            Message = "Category eklendi",
-            Status =200,
-            Success = true
+            var createdCategory = _mapper.Map<Category>(dto);
 
-        };
+            var category = _categoryRepository.Add(createdCategory);
+            var response = _mapper.Map<CategoryResponseDto>(category);
+
+            return new ReturnModel<CategoryResponseDto>
+            {
+                Data = response,
+                Message = "Category eklendi",
+                Status = 200,
+                Success = true
+
+            };
+
+        }
+        catch (Exception ex)
+        { 
+            return ExceptionHandler<CategoryResponseDto>.HandleException(ex);
+        }
     }
 
     public ReturnModel<string> Delete(int id)
     {
-        _businessRules.CategoryIsPresent(id);
-
-        var category = _categoryRepository.GetById(id);
-        var deleteCategory = _categoryRepository.Delete(category);
-
-        return new ReturnModel<string>
+        try
         {
-            Data= $"Silinen Category : {deleteCategory.Name}",
-            Message =" Category silindi",
-            Status =204,
-            Success = true
-        };
+            _businessRules.CategoryIsPresent(id);
+
+            var category = _categoryRepository.GetById(id);
+            var deleteCategory = _categoryRepository.Delete(category);
+
+            return new ReturnModel<string>
+            {
+                Data = $"Silinen Category : {deleteCategory.Name}",
+                Message = " Category silindi",
+                Status = 204,
+                Success = true
+            };
+
+        }
+        catch (Exception ex) 
+        { 
+            return ExceptionHandler<string>.HandleException(ex);
+        }
     }
 
     public ReturnModel<List<CategoryResponseDto>> GetAll()
@@ -72,16 +88,24 @@ public class CategoryService : ICategoryService
 
     public ReturnModel<List<CategoryResponseDto>> GetAllByNameContains(string name)
     {
-        var categories = _categoryRepository.GetAll(c=>c.Name == name);
-        var response = _mapper.Map<List<CategoryResponseDto>>(categories);
-
-        return new ReturnModel<List<CategoryResponseDto>>
+        try
         {
-            Data = response,
-            Message = string.Empty,
-            Status = 200,
-            Success = true
-        };
+            var categories = _categoryRepository.GetAll(c => c.Name == name);
+            var response = _mapper.Map<List<CategoryResponseDto>>(categories);
+
+            return new ReturnModel<List<CategoryResponseDto>>
+            {
+                Data = response,
+                Message = string.Empty,
+                Status = 200,
+                Success = true
+            };
+
+        }
+        catch(Exception ex)
+        {
+            return ExceptionHandler<List<CategoryResponseDto>>.HandleException(ex);
+        }
     }
 
     public ReturnModel<CategoryResponseDto> GetById(int id)

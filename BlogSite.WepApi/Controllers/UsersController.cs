@@ -24,7 +24,7 @@ public class UsersController(IUserService _userService) : ControllerBase
     }
 
     [HttpGet("getbyid/{id}")]
-    public IActionResult GetById([FromRoute] long id)
+    public IActionResult GetById([FromRoute] string id)
     {
         var result = _userService.GetById(id);
         return Ok(result);
@@ -32,7 +32,7 @@ public class UsersController(IUserService _userService) : ControllerBase
     }
 
     [HttpDelete("delete")]
-    public IActionResult Delete(long id)
+    public IActionResult Delete(string id)
     {
         var result = _userService.Delete(id);
         return Ok(result);
@@ -44,5 +44,22 @@ public class UsersController(IUserService _userService) : ControllerBase
         var result = _userService.Update(dto);
         return Ok(result);
     }
+
+    [HttpPost("create")]
+    public async Task<IActionResult> CreateUser(RegisterRequestDto dto)
+    {
+        var result = await _userService.CreateUserAsync(dto);
+        return Ok(result);
+
+    }
+
+    [HttpGet("getbyemail")]
+    public async Task<IActionResult> GetByEmail([FromQuery] string email)
+    {
+        var result = await _userService.GetByEmailAsync(email);
+        return Ok(result);
+
+    } 
+
 
 }

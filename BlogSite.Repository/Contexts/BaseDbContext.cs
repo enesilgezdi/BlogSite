@@ -1,12 +1,14 @@
 ﻿
 
 using BlogSite.Models.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
 namespace BlogSite.Repository.Contexts;
 
-public class BaseDbContext : DbContext
+public class BaseDbContext : IdentityDbContext<User,IdentityRole,string>
 {
     public BaseDbContext(DbContextOptions opt): base(opt)
     {
@@ -16,11 +18,11 @@ public class BaseDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        //base.OnModelCreating(modelBuilder);
     }
 
 
     public DbSet<Post> Posts { get; set; }
-    public DbSet<User> Users { get; set; }
 
     public DbSet<Category> Categories { get; set; }
 

@@ -7,6 +7,8 @@ using BlogSite.Models.Entities;
 using BlogSite.Models.Users;
 using BlogSite.Repository.Repositories.Abstracts;
 using Core.Entities;
+using Core.Exceptions;
+using Microsoft.AspNetCore.Identity;
 
 namespace Blog.Service.Concretes;
 
@@ -15,31 +17,56 @@ public sealed class UserService : IUserService
     private readonly IUserRepository _userRepository;
     private readonly IMapper _mapper;
     private readonly UserBusinessRules _businessRules;
+    private readonly UserManager<User> _userManager;
 
-    public UserService(IUserRepository userRepository, IMapper mapper, UserBusinessRules businessRules)
+    public UserService(IUserRepository userRepository, IMapper mapper, UserBusinessRules businessRules, UserManager<User> userManager)
     {
         _userRepository = userRepository;
         _mapper = mapper;
         _businessRules = businessRules;
+        _userManager = userManager;
     }
 
     public ReturnModel<UserResponseDto> Add(CreateUserRequestDto dto)
     {
-        User createdUser = _mapper.Map<User>(dto);
-        
-        User user = _userRepository.Add(createdUser);
-        UserResponseDto response = _mapper.Map<UserResponseDto>(user);
-
-        return new ReturnModel<UserResponseDto>
+        try
         {
-            Data = response,
-            Message = "User eklendi.",
-            Status = 200,
-            Success = true
-        };
+            User createdUser = _mapper.Map<User>(dto);
+
+            User user = _userRepository.Add(createdUser);
+            UserResponseDto response = _mapper.Map<UserResponseDto>(user);
+
+            return new ReturnModel<UserResponseDto>
+            {
+                Data = response,
+                Message = "User eklendi.",
+                Status = 200,
+                Success = true
+            };
+
+        }
+        catch (Exception ex) {
+            return ExceptionHandler<UserResponseDto>.HandleException(ex);
+        
+        }
+
     }
 
-    public ReturnModel<UserResponseDto> Delete(long id)
+    public async Task<User> CreateUserAsync(RegisterRequestDto dto)
+    {
+        User user = new User()
+        {
+            Email = dto.Email,
+            UserName = dto.Username,
+            BirthDate = dto.BirthDate,
+        };
+        var result = await _userManager.CreateAsync(user, dto.Password);
+
+        return user;
+
+    }
+
+    public ReturnModel<UserResponseDto> Delete(string id)
     {
         try
         {
@@ -81,7 +108,18 @@ public sealed class UserService : IUserService
 
     }
 
-    public ReturnModel<UserResponseDto> GetById(long id)
+    public async Task<User> GetByEmailAsync(string email)
+    {
+        var user = await _userManager.FindByEmailAsync(email);
+        if(user == null)
+        {
+            throw new NotFoundException("kullancı bulunamadı");
+        }
+        return user;
+
+    }
+
+    public ReturnModel<UserResponseDto> GetById(string id)
     {
         try
         {
@@ -112,8 +150,8 @@ public sealed class UserService : IUserService
         {
             _businessRules.UserIsPresent(dto.Id);
             var user = _userRepository.GetById(dto.Id);
-            user.FirstName = dto.FirstName;
-            user.LastName = dto.LastName;
+            user.Firstname = dto.Firstname;
+            user.Lastname = dto.Lastname;
             user.Email = dto.Email;
 
             var updated = _userRepository.Update(user);

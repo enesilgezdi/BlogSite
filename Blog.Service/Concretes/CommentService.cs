@@ -7,6 +7,7 @@ using BlogSite.Models.Comments;
 using BlogSite.Models.Entities;
 using BlogSite.Repository.Repositories.Abstracts;
 using Core.Entities;
+using System.Collections.Generic;
 
 namespace Blog.Service.Concretes;
 
@@ -25,35 +26,52 @@ public sealed class CommentService : ICommentService
 
     public ReturnModel<CommentResponseDto> Add(CreateCommentRequestDto dto)
     {
-        Comment createdComment = _mapper.Map<Comment>(dto);
-        createdComment.Id = Guid.NewGuid();
-
-        Comment comment = _commentRepository.Add(createdComment);
-        CommentResponseDto response = _mapper.Map<CommentResponseDto>(comment);
-
-        return new ReturnModel<CommentResponseDto>
+        try
         {
-            Data = response,
-            Message = "Comment eklendi",
-            Status = 200,
-            Success = true
-        };
+            Comment createdComment = _mapper.Map<Comment>(dto);
+            createdComment.Id = Guid.NewGuid();
+
+            Comment comment = _commentRepository.Add(createdComment);
+            CommentResponseDto response = _mapper.Map<CommentResponseDto>(comment);
+
+            return new ReturnModel<CommentResponseDto>
+            {
+                Data = response,
+                Message = "Comment eklendi",
+                Status = 200,
+                Success = true
+            };
+
+        }
+        catch(Exception ex) 
+        {
+            return ExceptionHandler<CommentResponseDto>.HandleException(ex);
+
+        }
     }
 
     public ReturnModel<CommentResponseDto> Delete(Guid id)
     {
-        _businessRules.CommentIsPresent(id);
-
-        Comment? comment = _commentRepository.GetById(id);
-        Comment deleteComment = _commentRepository.Delete(comment);
-
-        return new ReturnModel<CommentResponseDto>
+        try
         {
-            Data = null,
-            Message = "Comment Silindi",
-            Status = 200,
-            Success = true
-        };
+            _businessRules.CommentIsPresent(id);
+
+            Comment? comment = _commentRepository.GetById(id);
+            Comment deleteComment = _commentRepository.Delete(comment);
+
+            return new ReturnModel<CommentResponseDto>
+            {
+                Data = null,
+                Message = "Comment Silindi",
+                Status = 200,
+                Success = true
+            };
+
+        }
+        catch (Exception ex)
+        {
+            return ExceptionHandler<CommentResponseDto>.HandleException(ex);
+        }
     }
 
     public ReturnModel<List<CommentResponseDto>> GetAll()
@@ -74,45 +92,71 @@ public sealed class CommentService : ICommentService
 
     public ReturnModel<List<CommentResponseDto>> GetAllByPostId(Guid postId)
     {
-        var comments = _commentRepository.GetAll(c => c.PostId == postId);
-        var responses = _mapper.Map<List<CommentResponseDto>>(comments);
-
-        return new ReturnModel<List<CommentResponseDto>>
+        try
         {
-            Data = responses,
-            Message = $"Post Id ye göre Commentler listelendi : Post Id : {postId} ",
-            Status = 200,
-            Success = true
+            var comments = _commentRepository.GetAll(c => c.PostId == postId);
+            var responses = _mapper.Map<List<CommentResponseDto>>(comments);
 
-        };
+            return new ReturnModel<List<CommentResponseDto>>
+            {
+                Data = responses,
+                Message = $"Post Id ye göre Commentler listelendi : Post Id : {postId} ",
+                Status = 200,
+                Success = true
+
+            };
+
+        }
+        catch(Exception ex) 
+        {
+            return ExceptionHandler<List<CommentResponseDto>>.HandleException(ex);
+
+        }
     }
 
     public ReturnModel<List<CommentResponseDto>> GetAllByTextContains(string text)
     {
-       var comments = _commentRepository.GetAll(c=> c.Text.Contains(text));
-       var responses = _mapper.Map<List<CommentResponseDto>>(comments);
-
-        return new ReturnModel<List<CommentResponseDto>>
+        try
         {
-            Data= responses,
-            Message = string.Empty,
-            Status = 200,
-            Success = true
-        };
+            var comments = _commentRepository.GetAll(c => c.Text.Contains(text));
+            var responses = _mapper.Map<List<CommentResponseDto>>(comments);
+
+            return new ReturnModel<List<CommentResponseDto>>
+            {
+                Data = responses,
+                Message = string.Empty,
+                Status = 200,
+                Success = true
+            };
+
+        }
+        catch(Exception ex)
+        {
+            return ExceptionHandler<List<CommentResponseDto>>.HandleException(ex);
+
+        }
     }
 
-    public ReturnModel<List<CommentResponseDto>> GetAllByUserId(long userId)
+    public ReturnModel<List<CommentResponseDto>> GetAllByUserId(string id)
     {
-        var comments = _commentRepository.GetAll(c=>c.UserId == userId);
-        var responses = _mapper.Map<List<CommentResponseDto>>(comments);
-
-        return new ReturnModel<List<CommentResponseDto>>
+        try
         {
-            Data = responses,
-            Message = $"User Id'sine göre Commentler getirildi",
-            Status = 200,
-            Success = true
-        };
+            var comments = _commentRepository.GetAll(c => c.UserId == id);
+            var responses = _mapper.Map<List<CommentResponseDto>>(comments);
+
+            return new ReturnModel<List<CommentResponseDto>>
+            {
+                Data = responses,
+                Message = $"User Id'sine göre Commentler getirildi",
+                Status = 200,
+                Success = true
+            };
+
+        }
+        catch(Exception ex)
+        {
+            return ExceptionHandler<List<CommentResponseDto>>.HandleException (ex);
+        }
     }
 
     public ReturnModel<CommentResponseDto> GetById(Guid id)

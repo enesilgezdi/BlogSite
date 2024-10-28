@@ -25,43 +25,57 @@ public sealed class PostService : IPostService
 
     public ReturnModel<PostResponseDto> Add(CreatePostRequestDto dto)
     {
-        
-
-        Post createdPost = _mapper.Map<Post>(dto);
-        createdPost.Id = Guid.NewGuid();
 
 
-        _businessRules.CheckIfPostTitleLengthValid(createdPost.Title);
-
-        Post post = _postRepository.Add(createdPost);
-       
-        PostResponseDto response = _mapper.Map<PostResponseDto>(post);
-
-        return new ReturnModel<PostResponseDto>
+        try
         {
-            Data = response,
-            Message = "Post Eklendi.",
-            Status = 200,
-            Success = true
-        };
+            Post createdPost = _mapper.Map<Post>(dto);
+            createdPost.Id = Guid.NewGuid();
+
+
+            _businessRules.CheckIfPostTitleLengthValid(createdPost.Title);
+
+            Post post = _postRepository.Add(createdPost);
+
+            PostResponseDto response = _mapper.Map<PostResponseDto>(post);
+
+            return new ReturnModel<PostResponseDto>
+            {
+                Data = response,
+                Message = "Post Eklendi.",
+                Status = 200,
+                Success = true
+            };
+
+        }
+        catch (Exception ex) { 
+            return ExceptionHandler<PostResponseDto>.HandleException(ex);
+        }
 
     }
 
     public ReturnModel<string> Delete(Guid id)
     {
 
-        _businessRules.PostIsPresent(id);
-
-        Post? post = _postRepository.GetById(id);
-        Post deletedPost = _postRepository.Delete(post);
-
-        return new ReturnModel<string>
+        try
         {
-            Data =$"Post Başlığı : {deletedPost.Title}",
-            Message = Messages.PostDeleteMessage,
-            Status = 204,
-            Success = true
-        };
+            _businessRules.PostIsPresent(id);
+
+            Post? post = _postRepository.GetById(id);
+            Post deletedPost = _postRepository.Delete(post);
+
+            return new ReturnModel<string>
+            {
+                Data = $"Post Başlığı : {deletedPost.Title}",
+                Message = Messages.PostDeleteMessage,
+                Status = 204,
+                Success = true
+            };
+
+        }
+        catch (Exception ex) {
+            return ExceptionHandler<string>.HandleException(ex);
+        }
     }
 
     public ReturnModel<List<PostResponseDto>> GetAll()
@@ -80,48 +94,70 @@ public sealed class PostService : IPostService
 
     }
 
-    public ReturnModel<List<PostResponseDto>> GetAllByAuthorId(long authorId)
+    public ReturnModel<List<PostResponseDto>> GetAllByAuthorId(string id)
     {
-        var posts = _postRepository.GetAll(p => p.AuthorId == authorId);
-        var responses = _mapper.Map<List<PostResponseDto>>(posts);
-
-        return new ReturnModel<List<PostResponseDto>>
+        try
         {
-            Data = responses,
-            Message = $"Yazar Id'sine gore Postlar Listelendi : Yazar Id: {authorId}",
-            Status = 200,
-            Success = true
-        };
+            var posts = _postRepository.GetAll(p => p.AuthorId == id);
+            var responses = _mapper.Map<List<PostResponseDto>>(posts);
+
+            return new ReturnModel<List<PostResponseDto>>
+            {
+                Data = responses,
+                Message = $"Yazar Id'sine gore Postlar Listelendi : Yazar Id: {id}",
+                Status = 200,
+                Success = true
+            };
+
+        }
+        catch (Exception ex) { 
+            return ExceptionHandler<List<PostResponseDto>>.HandleException(ex);
+        }
 
 
     }
 
     public ReturnModel<List<PostResponseDto>> GetAllByCategoryId(int id)
     {
-        var posts = _postRepository.GetAll(p=>p.CategoryId == id);
-        var responses = _mapper.Map<List<PostResponseDto>>(posts);
-
-        return new ReturnModel<List<PostResponseDto>>
+        try
         {
-            Data = responses,
-            Message = $"Category Id'sine gore Postlar Listelendi : Yazar Id: {id}",
-            Status = 200,
-            Success = true
-        };
+            var posts = _postRepository.GetAll(p => p.CategoryId == id);
+            var responses = _mapper.Map<List<PostResponseDto>>(posts);
+
+            return new ReturnModel<List<PostResponseDto>>
+            {
+                Data = responses,
+                Message = $"Category Id'sine gore Postlar Listelendi : Yazar Id: {id}",
+                Status = 200,
+                Success = true
+            };
+
+        }
+        catch (Exception ex) {
+            return ExceptionHandler<List<PostResponseDto>>.HandleException (ex);
+        }
     }
 
     public ReturnModel<List<PostResponseDto>> GetAllByTitleContains(string text)
     {
-        var posts = _postRepository.GetAll(p=>p.Title.Contains(text));
-        var responses = _mapper.Map<List<PostResponseDto>>(posts);
-
-        return new ReturnModel<List<PostResponseDto>>
+        try
         {
-            Data = responses,
-            Message = string.Empty,
-            Status = 200,
-            Success = true
-        };
+            var posts = _postRepository.GetAll(p => p.Title.Contains(text));
+            var responses = _mapper.Map<List<PostResponseDto>>(posts);
+
+            return new ReturnModel<List<PostResponseDto>>
+            {
+                Data = responses,
+                Message = string.Empty,
+                Status = 200,
+                Success = true
+            };
+
+
+        }
+        catch (Exception ex) {
+            return ExceptionHandler<List<PostResponseDto>>.HandleException(ex);
+        }
     }
 
     public ReturnModel<PostResponseDto> GetById(Guid id)

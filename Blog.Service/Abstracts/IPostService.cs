@@ -15,7 +15,7 @@ public interface IPostService
     ReturnModel<PostResponseDto> Update(UpdatePostRequestDto dto);
     ReturnModel<string> Delete(Guid id);
     ReturnModel<List<PostResponseDto>>  GetAllByCategoryId(int id);
-    ReturnModel<List<PostResponseDto>>  GetAllByAuthorId(long authorId);
+    ReturnModel<List<PostResponseDto>>  GetAllByAuthorId(string id);
     ReturnModel<List<PostResponseDto>>  GetAllByTitleContains(string text);
 
 }

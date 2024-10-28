@@ -7,7 +7,7 @@ using Core.Repository;
 
 namespace BlogSite.Repository.Repositories.Concretes;
 
-public class EfUserRepository : EfRepositoryBase<BaseDbContext, User , long>, IUserRepository
+public class EfUserRepository : EfRepositoryBase<BaseDbContext, User, string>, IUserRepository
 {
     public EfUserRepository(BaseDbContext context) : base(context)
     {

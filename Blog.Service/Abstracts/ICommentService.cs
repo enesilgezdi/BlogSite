@@ -17,7 +17,7 @@ public  interface ICommentService
     ReturnModel<CommentResponseDto> GetById(Guid id);
 
     ReturnModel<List<CommentResponseDto>> GetAllByPostId(Guid postId);
-    ReturnModel<List<CommentResponseDto>> GetAllByUserId(long userId);
+    ReturnModel<List<CommentResponseDto>> GetAllByUserId(string id);
     ReturnModel <List<CommentResponseDto>> GetAllByTextContains(string text);
 
 }
