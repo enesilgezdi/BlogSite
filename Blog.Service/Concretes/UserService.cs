@@ -1,176 +1,109 @@
 ﻿
 
-using AutoMapper;
 using Blog.Service.Abstracts;
-using Blog.Service.Rules;
 using BlogSite.Models.Entities;
 using BlogSite.Models.Users;
-using BlogSite.Repository.Repositories.Abstracts;
-using Core.Entities;
 using Core.Exceptions;
 using Microsoft.AspNetCore.Identity;
 
 namespace Blog.Service.Concretes;
 
-public sealed class UserService : IUserService
+public class UserService : IUserService
 {
-    private readonly IUserRepository _userRepository;
-    private readonly IMapper _mapper;
-    private readonly UserBusinessRules _businessRules;
     private readonly UserManager<User> _userManager;
 
-    public UserService(IUserRepository userRepository, IMapper mapper, UserBusinessRules businessRules, UserManager<User> userManager)
+    public UserService(UserManager<User> userManager)
     {
-        _userRepository = userRepository;
-        _mapper = mapper;
-        _businessRules = businessRules;
         _userManager = userManager;
-    }
-
-    public ReturnModel<UserResponseDto> Add(CreateUserRequestDto dto)
-    {
-        try
-        {
-            User createdUser = _mapper.Map<User>(dto);
-
-            User user = _userRepository.Add(createdUser);
-            UserResponseDto response = _mapper.Map<UserResponseDto>(user);
-
-            return new ReturnModel<UserResponseDto>
-            {
-                Data = response,
-                Message = "User eklendi.",
-                Status = 200,
-                Success = true
-            };
-
-        }
-        catch (Exception ex) {
-            return ExceptionHandler<UserResponseDto>.HandleException(ex);
         
-        }
+    }
+    public async Task<string> ChangePasswordAsync(string id, ChangePasswordRequestDto dto)
+    {
+        var user = await _userManager.FindByIdAsync(id);
+        UserIsPresent(user);
 
+        var result = await _userManager.ChangePasswordAsync(user, dto.OldPassword, dto.NewPassword);
+        if (!result.Succeeded)
+        {
+            throw new BusinessException(result.Errors.First().Description);
+        }
+        return "Sifre değistirildi";
     }
 
-    public async Task<User> CreateUserAsync(RegisterRequestDto dto)
+    public async Task<User> CreateUserAsync(RegisterRequestDto registerRequestDto)
     {
         User user = new User()
         {
-            Email = dto.Email,
-            UserName = dto.Username,
-            BirthDate = dto.BirthDate,
+            Email = registerRequestDto.Email,
+            UserName = registerRequestDto.Username,
+            BirthDate = registerRequestDto.BirthDate,
         };
-        var result = await _userManager.CreateAsync(user, dto.Password);
+        
+        var result = await _userManager.CreateAsync(user, registerRequestDto.Password);
+
+        var role = await _userManager.AddToRoleAsync(user, "User");
+        if (!role.Succeeded)
+        {
+            throw new BusinessException(role.Errors.First().Description);
+        }
 
         return user;
-
     }
 
-    public ReturnModel<UserResponseDto> Delete(string id)
+    public async Task<string> DeleteAsync(string id)
     {
-        try
-        {
-            _businessRules.UserIsPresent(id);
-            User? user = _userRepository.GetById(id);
-            User deletedUser = _userRepository.Delete(user);
+        var user = await _userManager.FindByIdAsync(id);
+        UserIsPresent(user);
 
-            return new ReturnModel<UserResponseDto>
-            {
-                Data = null,
-                Message = "User Silindi",
-                Status=204,
-                Success = true
+        var result = await _userManager.DeleteAsync(user);
 
-            };
-
-        }
-        catch(Exception ex) 
-        {
-            return ExceptionHandler<UserResponseDto>.HandleException(ex);
-
-        }
-        
-    }
-
-    public ReturnModel<List<UserResponseDto>> GetAll()
-    {
-        var posts = _userRepository.GetAll();
-
-        List<UserResponseDto> response = _mapper.Map <List<UserResponseDto>>(posts);
-
-        return new ReturnModel<List<UserResponseDto>>
-        {
-            Data = response,
-            Message = "Userlar başarıyla getirildi",
-            Status = 200,
-            Success = true
-        };
-
+        return "Kullancı silindi";
     }
 
     public async Task<User> GetByEmailAsync(string email)
     {
         var user = await _userManager.FindByEmailAsync(email);
-        if(user == null)
+        UserIsPresent(user);
+
+        return user;
+    }
+
+    public async Task<User> LoginAsync(LoginRequestDto dto)
+    {
+        var userExist = await _userManager.FindByEmailAsync(dto.Email);
+        UserIsPresent(userExist);
+
+        var result = await _userManager.CheckPasswordAsync(userExist, dto.Paswword);
+        if(result is false)
         {
-            throw new NotFoundException("kullancı bulunamadı");
+            throw new NotFoundException("Parolanız yanlış");
+        }
+
+        return userExist;
+    }
+
+    public async Task<User> UpdateAsync(string id, UpdateUserRequestDto dto)
+    {
+        var user = await _userManager.FindByIdAsync(id);
+        UserIsPresent(user);
+
+        user.UserName = dto.Username;
+        user.BirthDate = dto.Birthdate;
+
+        var result = await _userManager.UpdateAsync(user);
+
+        if(result.Succeeded is false)
+        {
+            throw new BusinessException(result.Errors.First().Description);
         }
         return user;
-
     }
 
-    public ReturnModel<UserResponseDto> GetById(string id)
+    private void UserIsPresent(User? user)
     {
-        try
+        if (user is null)
         {
-            _businessRules.UserIsPresent(id);
-
-            var post = _userRepository.GetById(id);
-            var response = _mapper.Map<UserResponseDto>(post);
-
-            return new ReturnModel<UserResponseDto>
-            {
-                Data = response,
-                Message = "ilgili User Gösterildi",
-                Status = 200,
-                Success = true
-            };
-
-        }
-        catch(Exception ex) 
-        {
-            return ExceptionHandler<UserResponseDto>.HandleException(ex);
-
-        }
-    }
-
-    public ReturnModel<UserResponseDto> Update(UpdateUserRequestDto dto)
-    {
-        try
-        {
-            _businessRules.UserIsPresent(dto.Id);
-            var user = _userRepository.GetById(dto.Id);
-            user.Firstname = dto.Firstname;
-            user.Lastname = dto.Lastname;
-            user.Email = dto.Email;
-
-            var updated = _userRepository.Update(user);
-
-            UserResponseDto response = _mapper.Map<UserResponseDto>(updated);
-
-            return new ReturnModel<UserResponseDto>
-            {
-                Data = response,
-                Message = "User Güncellendi",
-                Status = 200,
-                Success = true
-            };
-
-        }
-        catch (Exception ex) 
-        {
-            return ExceptionHandler<UserResponseDto>.HandleException(ex);
-        
+            throw new NotFoundException("Kullanıcı bulunamadı.");
         }
     }
 }

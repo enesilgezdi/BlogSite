@@ -7,43 +7,8 @@ namespace BlogSite.WepApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class UsersController(IUserService _userService) : ControllerBase
+public class UsersController(IUserService _userService, IAuthenticationService _authenticationService) : ControllerBase
 {
-    [HttpGet("getall")]
-    public IActionResult GetAll()
-    {
-        var result = _userService.GetAll();
-        return Ok(result);
-    }
-    [HttpPost("add")]
-    public IActionResult Add([FromBody] CreateUserRequestDto dto)
-    {
-        var result = _userService.Add(dto);
-        return Ok(result);
-
-    }
-
-    [HttpGet("getbyid/{id}")]
-    public IActionResult GetById([FromRoute] string id)
-    {
-        var result = _userService.GetById(id);
-        return Ok(result);
-
-    }
-
-    [HttpDelete("delete")]
-    public IActionResult Delete(string id)
-    {
-        var result = _userService.Delete(id);
-        return Ok(result);
-    }
-
-    [HttpPut("update")]
-    public IActionResult Update(UpdateUserRequestDto dto)
-    {
-        var result = _userService.Update(dto);
-        return Ok(result);
-    }
 
     [HttpPost("create")]
     public async Task<IActionResult> CreateUser(RegisterRequestDto dto)
@@ -59,7 +24,33 @@ public class UsersController(IUserService _userService) : ControllerBase
         var result = await _userService.GetByEmailAsync(email);
         return Ok(result);
 
-    } 
+    }
 
+    [HttpPost("login")]
+    public async Task<IActionResult> Login([FromBody]LoginRequestDto dto)
+    {
+        var result = await _userService.LoginAsync(dto);
+        return Ok(result);
+    }
 
+    [HttpDelete("deleteasync")]
+    public async Task<IActionResult> DeleteAsync([FromBody]string id)
+    {
+        var result = await _userService.DeleteAsync(id);
+        return Ok(result);
+    }
+
+    [HttpPut("updateasync")]
+    public async Task<IActionResult> UpdateAsync([FromQuery]string id,  [FromQuery]UpdateUserRequestDto dto)
+    {
+        var result = await (_userService.UpdateAsync(id, dto));
+        return Ok(result);
+    }
+
+    [HttpPut("changepassword")]
+    public async Task<IActionResult> ChangePassword(string id, ChangePasswordRequestDto dto)
+    {
+        var result = await _userService.ChangePasswordAsync(id, dto);
+        return Ok(result);
+    }
 }

@@ -52,7 +52,7 @@ public class CommentsController(ICommentService _commentService) : ControllerBas
         return Ok(result);
     }
     [HttpGet("getallbyuserid")]
-    public IActionResult GetAllByUserId(long userId)
+    public IActionResult GetAllByUserId(string userId)
     {
         var result = _commentService.GetAllByUserId(userId);
         return Ok(result);

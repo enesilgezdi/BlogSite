@@ -18,7 +18,7 @@ public class BaseDbContext : IdentityDbContext<User,IdentityRole,string>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-        //base.OnModelCreating(modelBuilder);
+        base.OnModelCreating(modelBuilder);
     }
 
 
@@ -27,4 +27,5 @@ public class BaseDbContext : IdentityDbContext<User,IdentityRole,string>
     public DbSet<Category> Categories { get; set; }
 
     public DbSet<Comment> Comments { get; set; }
+
 }

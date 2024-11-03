@@ -1,6 +1,7 @@
 ﻿using Blog.Service.Abstracts;
 using Blog.Service.Concretes;
 using BlogSite.Models.Posts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -35,8 +36,9 @@ public class PostsController(IPostService _postService) : ControllerBase
         }
         return Ok(result);
     }
-    [HttpGet("getbyid/{id}")]    
-    
+    [HttpGet("getbyid/{id}")]
+    [Authorize(Roles = "User")]
+
     public IActionResult GetById([FromRoute]Guid id)
     {
         var result =_postService.GetById(id);
