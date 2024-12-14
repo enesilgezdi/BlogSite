@@ -6,7 +6,6 @@ namespace BlogSite.Models.Entities;
 
 public sealed class User : IdentityUser
 {
-
     public DateTime BirthDate { get; set; }
     public List<Post> Posts { get; set; }
 

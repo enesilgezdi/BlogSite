@@ -9,7 +9,9 @@ using Core.Entities;
 
 
 namespace Blog.Service.Concretes;
-
+// void olucak PostService_WhenPostAdded_ReturnSuccess
+// void olucak PostService_WhenPostAdded_ReturnFailed
+// void olucak PostService_WhenPostAdded_ThrowsException
 public sealed class PostService : IPostService
 {
     private readonly IPostRepository _postRepository;
@@ -23,7 +25,7 @@ public sealed class PostService : IPostService
         _businessRules = businessRules;
     }
 
-    public ReturnModel<PostResponseDto> Add(CreatePostRequestDto dto)
+    public async Task<ReturnModel<PostResponseDto>> Add(CreatePostRequestDto dto, string userId)
     {
 
 
@@ -31,6 +33,7 @@ public sealed class PostService : IPostService
         {
             Post createdPost = _mapper.Map<Post>(dto);
             createdPost.Id = Guid.NewGuid();
+            createdPost.AuthorId = userId;
 
 
             _businessRules.CheckIfPostTitleLengthValid(createdPost.Title);
@@ -184,7 +187,7 @@ public sealed class PostService : IPostService
         
     }
 
-    public ReturnModel<PostResponseDto> Update(UpdatePostRequestDto dto)
+    public ReturnModel<PostResponseDto> Update(UpdatePostRequestDto dto, string authorId)
     {
         try
         {
@@ -193,6 +196,7 @@ public sealed class PostService : IPostService
             Post post = _postRepository.GetById(dto.Id);
             post.Title = dto.Title;
             post.Content = dto.Content;
+            post.AuthorId = authorId;
 
             Post updated = _postRepository.Update(post);
 

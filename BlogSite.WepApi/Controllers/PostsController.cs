@@ -4,6 +4,7 @@ using BlogSite.Models.Posts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace BlogSite.WepApi.Controllers;
 
@@ -20,6 +21,7 @@ public class PostsController(IPostService _postService) : ControllerBase
     //}
 
     [HttpGet("getall")]
+    [Authorize]
     public IActionResult GetAll()
     {
         var result = _postService.GetAll();
@@ -27,18 +29,16 @@ public class PostsController(IPostService _postService) : ControllerBase
     }
 
     [HttpPost("add")]
+    [Authorize(Roles = "User")]
     public IActionResult Add([FromBody]CreatePostRequestDto dto)
     {
-        var result = _postService.Add(dto);
-        if(!result.Success)
-        {
-            return BadRequest(result.Message);
-        }
+        // kullanıcının tokenden ıd alanının alınması
+        string authorId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value;
+        var result = _postService.Add(dto, authorId);
         return Ok(result);
     }
-    [HttpGet("getbyid/{id}")]
-    [Authorize(Roles = "User")]
 
+    [HttpGet("getbyid/{id}")]
     public IActionResult GetById([FromRoute]Guid id)
     {
         var result =_postService.GetById(id);
@@ -48,7 +48,8 @@ public class PostsController(IPostService _postService) : ControllerBase
     [HttpPut("update")]
     public IActionResult Update([FromBody]UpdatePostRequestDto dto)
     {
-        var result = _postService.Update(dto);
+        string authorId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value;
+        var result = _postService.Update(dto,authorId);
         return Ok(result);
     }
 
