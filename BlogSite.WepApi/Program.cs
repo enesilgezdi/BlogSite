@@ -1,4 +1,5 @@
-
+using BlogSite.Repository;
+using Blog.Service;
 using BlogSite.Models.Entities;
 using BlogSite.Repository.Contexts;
 using BlogSite.WepApi.Middlewares;
@@ -13,8 +14,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
-//builder.Services.AddRepositoryDependencies(builder.Configuration);
-//builder.Services.AddServiceDependencies(builder.Configuration);
+builder.Services.AddRepositoryDependencies(builder.Configuration);
+builder.Services.AddServiceDependencies();
 
 
 builder.Services.Configure<CustomTokenOptions>(builder.Configuration.GetSection("TokenOption"));

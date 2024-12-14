@@ -8,16 +8,12 @@ namespace Blog.Service.Abstracts;
 
 public  interface ICommentService
 {
-    ReturnModel<CommentResponseDto> Add(CreateCommentRequestDto dto);
-    ReturnModel<CommentResponseDto> Update(UpdateCommentRequestDto dto);
-    ReturnModel<CommentResponseDto> Delete(Guid id);
+    ReturnModel<List<CommentResponseDto>> GetAllCommentsByAuthor(string authorId);
+    ReturnModel<NoData> Add(string userId, CreateCommentRequestDto dto);
+    ReturnModel<NoData> Update(UpdateCommentRequestDto dto);
 
-    ReturnModel<List<CommentResponseDto>> GetAll();
+    ReturnModel<List<CommentResponseDto>> GetAllByPostId(Guid id);
 
-    ReturnModel<CommentResponseDto> GetById(Guid id);
-
-    ReturnModel<List<CommentResponseDto>> GetAllByPostId(Guid postId);
-    ReturnModel<List<CommentResponseDto>> GetAllByUserId(string id);
-    ReturnModel <List<CommentResponseDto>> GetAllByTextContains(string text);
+    ReturnModel<NoData> Delete(Guid id);
 
 }

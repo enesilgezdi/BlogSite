@@ -60,6 +60,12 @@ public class UserService : IUserService
         return "Kullancı silindi";
     }
 
+    public async Task<List<User>> GetAllUsers()
+    {
+        var users = await _userManager.GetUsersInRoleAsync("User");
+        return users.ToList();
+    }
+
     public async Task<User> GetByEmailAsync(string email)
     {
         var user = await _userManager.FindByEmailAsync(email);

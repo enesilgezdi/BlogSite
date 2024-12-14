@@ -1,5 +1,7 @@
 ﻿using Blog.Service.Abstracts;
+using BlogSite.Models.Entities;
 using BlogSite.Models.Users;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,6 +29,7 @@ public class UsersController(IUserService _userService, IAuthenticationService _
     }
 
     [HttpPost("login")]
+    //[Authorize(Role = "Admin")]
     public async Task<IActionResult> Login([FromBody]LoginRequestDto dto)
     {
         var result = await _authenticationService.LoginByTokenAsync(dto);
@@ -41,6 +44,7 @@ public class UsersController(IUserService _userService, IAuthenticationService _
     }
 
     [HttpPut("updateasync")]
+    //[Authorize]
     public async Task<IActionResult> UpdateAsync([FromQuery]string id,  [FromQuery]UpdateUserRequestDto dto)
     {
         var result = await (_userService.UpdateAsync(id, dto));
@@ -48,9 +52,20 @@ public class UsersController(IUserService _userService, IAuthenticationService _
     }
 
     [HttpPut("changepassword")]
+    //[Authorize]
     public async Task<IActionResult> ChangePassword(string id, ChangePasswordRequestDto dto)
     {
         var result = await _userService.ChangePasswordAsync(id, dto);
+        return Ok(result);
+    }
+
+
+    [HttpGet("getallusers")]
+    [Authorize(Roles = "Admin, SuperAdmin")]
+
+    public async Task<IActionResult> GetAllUsers()
+    {
+        List<User> result = await _userService.GetAllUsers();
         return Ok(result);
     }
 }

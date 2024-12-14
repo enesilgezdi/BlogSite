@@ -15,4 +15,5 @@ public interface IUserService
 
     Task<User> UpdateAsync(string id, UpdateUserRequestDto dto);
     Task<string> ChangePasswordAsync(string id, ChangePasswordRequestDto dto);
+    Task<List<User>> GetAllUsers();
 }

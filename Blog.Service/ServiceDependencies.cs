@@ -24,6 +24,7 @@ public static class ServiceDependencies
         services.AddScoped<CommentBusinessRules>();
         services.AddScoped<CategoryBusinessRules>();
         services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IRoleService, RoleService>();
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
         services.AddFluentValidationAutoValidation();
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());

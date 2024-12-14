@@ -22,60 +22,48 @@ public class CategoryService : ICategoryService
         _businessRules = businessRules;
     }
 
-    public ReturnModel<CategoryResponseDto> Add(CreateCategoryRequestDto dto)
+    public ReturnModel<NoData> Add(CreateCategoryRequestDto dto)
     {
-        try
-        {
+        
             var createdCategory = _mapper.Map<Category>(dto);
 
             var category = _categoryRepository.Add(createdCategory);
-            var response = _mapper.Map<CategoryResponseDto>(category);
+            
 
-            return new ReturnModel<CategoryResponseDto>
+            return new ReturnModel<NoData>
             {
-                Data = response,
                 Message = "Category eklendi",
-                Status = 200,
+                Status = 201,
                 Success = true
 
             };
 
-        }
-        catch (Exception ex)
-        { 
-            return ExceptionHandler<CategoryResponseDto>.HandleException(ex);
-        }
+       
+       
     }
 
-    public ReturnModel<string> Delete(int id)
+    public ReturnModel<NoData> Delete(int id)
     {
-        try
-        {
             _businessRules.CategoryIsPresent(id);
 
             var category = _categoryRepository.GetById(id);
             var deleteCategory = _categoryRepository.Delete(category);
 
-            return new ReturnModel<string>
+            return new ReturnModel<NoData>
             {
-                Data = $"Silinen Category : {deleteCategory.Name}",
+              
                 Message = " Category silindi",
-                Status = 204,
+                Status = 200,
                 Success = true
             };
-
-        }
-        catch (Exception ex) 
-        { 
-            return ExceptionHandler<string>.HandleException(ex);
-        }
+        
     }
 
     public ReturnModel<List<CategoryResponseDto>> GetAll()
     {
-        var category  = _categoryRepository.GetAll();
+        var categories  = _categoryRepository.GetAll();
 
-        List<CategoryResponseDto> response = _mapper.Map<List<CategoryResponseDto>>(category);
+        List<CategoryResponseDto> response = _mapper.Map<List<CategoryResponseDto>>(categories);
 
         return new ReturnModel<List<CategoryResponseDto>>
         {
@@ -88,8 +76,7 @@ public class CategoryService : ICategoryService
 
     public ReturnModel<List<CategoryResponseDto>> GetAllByNameContains(string name)
     {
-        try
-        {
+        
             var categories = _categoryRepository.GetAll(c => c.Name == name);
             var response = _mapper.Map<List<CategoryResponseDto>>(categories);
 
@@ -101,60 +88,44 @@ public class CategoryService : ICategoryService
                 Success = true
             };
 
-        }
-        catch(Exception ex)
-        {
-            return ExceptionHandler<List<CategoryResponseDto>>.HandleException(ex);
-        }
+  
+       
     }
 
     public ReturnModel<CategoryResponseDto> GetById(int id)
     {
-        try
+        
+          _businessRules.CategoryIsPresent(id);
+          var category = _categoryRepository.GetById(id);
+          var response = _mapper.Map<CategoryResponseDto>(category);
+
+        return new ReturnModel<CategoryResponseDto>
         {
-            _businessRules.CategoryIsPresent(id);
-            var category = _categoryRepository.GetById(id);
-            var response = _mapper.Map<CategoryResponseDto>(category);
-
-            return new ReturnModel<CategoryResponseDto>
-            {
-                Data = response,
-                Message = "iligili category getirildi",
-                Status = 200,
-                Success = true
-            };
-
-        }
-        catch (Exception ex)
-        { 
-           return ExceptionHandler<CategoryResponseDto>.HandleException(ex);
-        }
+            Data = response,
+            Message = "iligili category getirildi",
+            Status = 200,
+            Success = true
+        };
+        
     }
 
-    public ReturnModel<CategoryResponseDto> Update(UpdateCategoryRequestDto dto)
+    public ReturnModel<NoData> Update(UpdateCategoryRequestDto dto)
     {
-        try
-        {
+        
             _businessRules.CategoryIsPresent(dto.Id);
             var category = _categoryRepository.GetById(dto.Id);
             category.Name= dto.Name;
 
-            var updatedCategory = _categoryRepository.Update(category);
+           _categoryRepository.Update(category);
 
-            var response = _mapper.Map<CategoryResponseDto>(updatedCategory);
-
-            return new ReturnModel<CategoryResponseDto>
+            return new ReturnModel<NoData>
             {
-                Data = response,
+
                 Message = "Category güncellendi",
                 Status = 200,
                 Success = true
             };
-
-        }
-        catch (Exception ex) 
-        {
-            return ExceptionHandler<CategoryResponseDto>.HandleException(ex);
-        }
     }
+
+    
 }

@@ -21,5 +21,7 @@ public class CommentConfigration : IEntityTypeConfiguration<Comment>
 
         builder.HasOne(x => x.User).WithMany(x => x.Comments).HasForeignKey(c => c.UserId).OnDelete(DeleteBehavior.Restrict);
         builder.HasOne(x => x.Post).WithMany(c => c.Comments).HasForeignKey(c => c.PostId).OnDelete(DeleteBehavior.Restrict);
+        builder.Navigation(x => x.User).AutoInclude();
+        builder.Navigation(x => x.Post).AutoInclude();
     }
 }

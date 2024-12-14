@@ -2,6 +2,7 @@
 using Blog.Service.Concretes;
 using BlogSite.Models.Categories;
 using BlogSite.Models.Comments;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,7 +10,7 @@ namespace BlogSite.WepApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class CategoriesController(ICategoryService _categoryService) : ControllerBase
+public sealed class CategoriesController(ICategoryService _categoryService) : ControllerBase
 {
     [HttpGet("getall")]
     public IActionResult GetAll()
@@ -19,13 +20,14 @@ public class CategoriesController(ICategoryService _categoryService) : Controlle
     }
 
     [HttpPost("add")]
+    //[Authorize(Roles = "Admin")]
     public IActionResult Add([FromBody] CreateCategoryRequestDto dto)
     {
         var result = _categoryService.Add(dto);
         return Ok(result);
     }
-    [HttpGet("getbyid/{id}")]
 
+    [HttpGet("getbyid/{id:int}")]
     public IActionResult GetById([FromRoute] int id)
     {
         var result = _categoryService.GetById(id);
@@ -33,14 +35,16 @@ public class CategoriesController(ICategoryService _categoryService) : Controlle
     }
 
     [HttpPut("update")]
-    public IActionResult Update(UpdateCategoryRequestDto dto)
+    //[Authorize(Roles = "Admin")]
+    public IActionResult Update([FromBody] UpdateCategoryRequestDto dto)
     {
         var result = _categoryService.Update(dto);
         return Ok(result);
     }
 
-    [HttpDelete("delete")]
-    public IActionResult Delete(int id)
+    [HttpDelete("delete/{id:int}")]
+    //[Authorize(Roles = "Admin")]
+    public IActionResult Delete([FromRoute] int id)
     {
         var result = _categoryService.Delete(id);
         return Ok(result);

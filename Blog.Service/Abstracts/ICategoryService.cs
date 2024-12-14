@@ -8,14 +8,17 @@ namespace Blog.Service.Abstracts;
 
 public interface ICategoryService
 {
-    ReturnModel<CategoryResponseDto>Add(CreateCategoryRequestDto dto);
+    //ReturnModel<CategoryResponseDto>Add(CreateCategoryRequestDto dto);
+    ReturnModel<NoData> Add(CreateCategoryRequestDto dto);
+
     ReturnModel<List<CategoryResponseDto>> GetAll();
 
     ReturnModel<CategoryResponseDto> GetById(int id);
 
-    ReturnModel<CategoryResponseDto> Update(UpdateCategoryRequestDto dto);
+    //ReturnModel<CategoryResponseDto> Update(UpdateCategoryRequestDto dto);
+    ReturnModel<NoData> Update(UpdateCategoryRequestDto dto);
 
-    ReturnModel<string> Delete(int id);
+    ReturnModel<NoData> Delete(int id);
 
     ReturnModel<List<CategoryResponseDto>> GetAllByNameContains(string name);
 }

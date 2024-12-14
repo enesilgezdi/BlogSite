@@ -2,4 +2,4 @@
 
 namespace BlogSite.Models.Comments;
 
-public sealed record CreateCommentRequestDto( string Text, Guid PostId , string UserId);
+public sealed record CreateCommentRequestDto( string Text, Guid PostId);

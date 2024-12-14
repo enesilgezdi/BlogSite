@@ -27,16 +27,11 @@ public sealed class PostService : IPostService
 
     public async Task<ReturnModel<PostResponseDto>> Add(CreatePostRequestDto dto, string userId)
     {
+         _businessRules.PostTitleMustBeUnique(dto.Title);
 
-
-        try
-        {
             Post createdPost = _mapper.Map<Post>(dto);
             createdPost.Id = Guid.NewGuid();
             createdPost.AuthorId = userId;
-
-
-            _businessRules.CheckIfPostTitleLengthValid(createdPost.Title);
 
             Post post = _postRepository.Add(createdPost);
 
@@ -50,18 +45,13 @@ public sealed class PostService : IPostService
                 Success = true
             };
 
-        }
-        catch (Exception ex) { 
-            return ExceptionHandler<PostResponseDto>.HandleException(ex);
-        }
 
     }
 
     public ReturnModel<string> Delete(Guid id)
     {
 
-        try
-        {
+       
             _businessRules.PostIsPresent(id);
 
             Post? post = _postRepository.GetById(id);
@@ -74,11 +64,7 @@ public sealed class PostService : IPostService
                 Status = 204,
                 Success = true
             };
-
-        }
-        catch (Exception ex) {
-            return ExceptionHandler<string>.HandleException(ex);
-        }
+        
     }
 
     public ReturnModel<List<PostResponseDto>> GetAll()
@@ -99,8 +85,7 @@ public sealed class PostService : IPostService
 
     public ReturnModel<List<PostResponseDto>> GetAllByAuthorId(string id)
     {
-        try
-        {
+        
             var posts = _postRepository.GetAll(p => p.AuthorId == id);
             var responses = _mapper.Map<List<PostResponseDto>>(posts);
 
@@ -112,18 +97,12 @@ public sealed class PostService : IPostService
                 Success = true
             };
 
-        }
-        catch (Exception ex) { 
-            return ExceptionHandler<List<PostResponseDto>>.HandleException(ex);
-        }
-
 
     }
 
     public ReturnModel<List<PostResponseDto>> GetAllByCategoryId(int id)
     {
-        try
-        {
+        
             var posts = _postRepository.GetAll(p => p.CategoryId == id);
             var responses = _mapper.Map<List<PostResponseDto>>(posts);
 
@@ -135,16 +114,13 @@ public sealed class PostService : IPostService
                 Success = true
             };
 
-        }
-        catch (Exception ex) {
-            return ExceptionHandler<List<PostResponseDto>>.HandleException (ex);
-        }
+        
+       
     }
 
     public ReturnModel<List<PostResponseDto>> GetAllByTitleContains(string text)
     {
-        try
-        {
+       
             var posts = _postRepository.GetAll(p => p.Title.Contains(text));
             var responses = _mapper.Map<List<PostResponseDto>>(posts);
 
@@ -156,41 +132,29 @@ public sealed class PostService : IPostService
                 Success = true
             };
 
-
-        }
-        catch (Exception ex) {
-            return ExceptionHandler<List<PostResponseDto>>.HandleException(ex);
-        }
     }
 
     public ReturnModel<PostResponseDto> GetById(Guid id)
     {
-        try
-        {
-            _businessRules.PostIsPresent(id);
+       
+         _businessRules.PostIsPresent(id);
 
-            var post = _postRepository.GetById(id);
-            var repsonse = _mapper.Map<PostResponseDto>(post);
-            return new ReturnModel<PostResponseDto>
-            {
-                Data = repsonse,
-                Message = "ilgili post gösterildi",
-                Status = 200,
-                Success = true
-            };
-
-        }
-        catch(Exception ex)
+          var post = _postRepository.GetById(id);
+          var repsonse = _mapper.Map<PostResponseDto>(post);
+        return new ReturnModel<PostResponseDto>
         {
-            return ExceptionHandler<PostResponseDto>.HandleException(ex);
-        }
+            Data = repsonse,
+            Message = "ilgili post gösterildi",
+            Status = 200,
+            Success = true
+        };
+       
         
     }
 
     public ReturnModel<PostResponseDto> Update(UpdatePostRequestDto dto, string authorId)
     {
-        try
-        {
+        
             _businessRules.PostIsPresent(dto.Id);
 
             Post post = _postRepository.GetById(dto.Id);
@@ -209,14 +173,6 @@ public sealed class PostService : IPostService
                 Status = 200,
                 Success = true
             };
-
-        }
-        catch(Exception ex)
-        {
-           return ExceptionHandler<PostResponseDto>.HandleException(ex);
-
-        }
-        
 
 
     }

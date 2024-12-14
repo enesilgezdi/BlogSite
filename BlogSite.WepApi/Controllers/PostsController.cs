@@ -10,6 +10,7 @@ namespace BlogSite.WepApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
 public class PostsController(IPostService _postService) : ControllerBase
 {
     // bu yukarda ki olay aşagıdakin halinin en guncel hali kısa yolu(.Net 8 den gelen özellik)
@@ -76,5 +77,15 @@ public class PostsController(IPostService _postService) : ControllerBase
     {
         var result = _postService.GetAllByTitleContains(text);
         return Ok(result);
+    }
+
+    [HttpGet("ownpost")]
+    public IActionResult OwnPosts()
+    {
+        string userId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value;
+        var result = _postService.GetAllByAuthorId(userId);
+
+        return Ok(result);
+
     }
 }

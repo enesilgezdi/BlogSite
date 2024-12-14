@@ -4,6 +4,7 @@ using BlogSite.Models.Comments;
 using BlogSite.Models.Posts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace BlogSite.WepApi.Controllers;
 
@@ -11,28 +12,17 @@ namespace BlogSite.WepApi.Controllers;
 [ApiController]
 public class CommentsController(ICommentService _commentService) : ControllerBase
 {
-    [HttpGet("getall")]
-    public IActionResult GetAll()
-    {
-        var result = _commentService.GetAll();
-        return Ok(result);
-    }
+  
 
     [HttpPost("add")]
     public IActionResult Add([FromBody] CreateCommentRequestDto dto)
     {
-        var result = _commentService.Add(dto);
+        string userId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value;
+        var result = _commentService.Add(userId,dto);
         return Ok(result);
     }
-    [HttpGet("getbyid/{id}")]
+    [HttpGet("update")]
 
-    public IActionResult GetById([FromRoute] Guid id)
-    {
-        var result = _commentService.GetById(id);
-        return Ok(result);
-    }
-
-    [HttpPut("update")]
     public IActionResult Update(UpdateCommentRequestDto dto)
     {
         var result = _commentService.Update(dto);
@@ -51,16 +41,16 @@ public class CommentsController(ICommentService _commentService) : ControllerBas
         var result = _commentService.GetAllByPostId(postId);
         return Ok(result);
     }
-    [HttpGet("getallbyuserid")]
-    public IActionResult GetAllByUserId(string userId)
+    [HttpGet("getallcommentsbyauthor")]
+    public IActionResult GetAllCommentsByAuthor()
     {
-        var result = _commentService.GetAllByUserId(userId);
+        string authorId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value;
+        var result = _commentService.GetAllCommentsByAuthor(authorId);
         return Ok(result);
+
     }
-    [HttpGet("getallbytextcontains")]
-    public IActionResult GetAllByTextContains(string text)
-    {
-        var result = _commentService.GetAllByTextContains(text);
-        return Ok(result);
-    }
+
+
+
+
 }

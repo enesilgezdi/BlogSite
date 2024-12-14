@@ -19,13 +19,13 @@ public class PostBusinessRules(IPostRepository _postRepository)
         return true;
 
     }
-    public void CheckIfPostTitleLengthValid(string title)
+    public void PostTitleMustBeUnique(string title)
     {
-        if (title.Length < 5 || title.Length > 100)
+       var post = _postRepository.GetAll(x=>x.Title == title);
+        if (post.Count > 0)
         {
-            throw new Exception("Başlık uzunluğu 5-100 karakter arasında olmalıdır.");
+            throw new BusinessException("Post benzersiz olmalı");
         }
-        return;
     }
 
 }
